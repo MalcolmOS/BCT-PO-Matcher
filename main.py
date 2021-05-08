@@ -5,7 +5,6 @@ from PyPDF2 import PdfFileMerger, PdfFileReader
 import openpyxl
 import datetime as dt
 import traceback
-from testing import Environment
 
 INVOICES_PATH = f"C:{os.path.sep}Users{os.path.sep}Malcolm{os.path.sep}Desktop{os.path.sep}Working Folder{os.path.sep}Buyers Invoices{os.path.sep}"
 REGISTERS_PATH = f"C:{os.path.sep}Users{os.path.sep}Malcolm{os.path.sep}Desktop{os.path.sep}Working Folder{os.path.sep}Buyers RR{os.path.sep}"
