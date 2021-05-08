@@ -5,10 +5,11 @@ from PyPDF2 import PdfFileMerger, PdfFileReader
 import openpyxl
 import datetime as dt
 import traceback
+from testing import Environment
 
-INVOICES_PATH = f"C:{os.path.sep}Users{os.path.sep}Malcolm{os.path.sep}Desktop{os.path.sep}Working Folder{os.path.sep}Buyers Invoices"
-REGISTERS_PATH = f"C:{os.path.sep}Users{os.path.sep}Malcolm{os.path.sep}Desktop{os.path.sep}Working Folder{os.path.sep}Buyers RR"
-MATCHED_PATH = f"C:{os.path.sep}Users{os.path.sep}Malcolm{os.path.sep}Desktop{os.path.sep}Working Folder{os.path.sep}Matched"
+INVOICES_PATH = f"C:{os.path.sep}Users{os.path.sep}Malcolm{os.path.sep}Desktop{os.path.sep}Working Folder{os.path.sep}Buyers Invoices{os.path.sep}"
+REGISTERS_PATH = f"C:{os.path.sep}Users{os.path.sep}Malcolm{os.path.sep}Desktop{os.path.sep}Working Folder{os.path.sep}Buyers RR{os.path.sep}"
+MATCHED_PATH = f"C:{os.path.sep}Users{os.path.sep}Malcolm{os.path.sep}Desktop{os.path.sep}Working Folder{os.path.sep}Matched{os.path.sep}"
 
 
 class Matching:
@@ -52,13 +53,13 @@ class Matching:
 
     def merge_files(self, invoice, register):
         # Moves the invoice and register match to the matching folder and creates a third file for the merged PDF and saves the two separate documents as backup.
-        shutil.move(f"{INVOICES_PATH}{os.path.sep}{invoice['file_name']}", f"{MATCHED_PATH}{os.path.sep}{invoice['file_name']}")
-        shutil.move(f"{REGISTERS_PATH}{os.path.sep}{register['file_name']}", f"{MATCHED_PATH}{os.path.sep}{register['file_name']}")
+        shutil.move(f"{INVOICES_PATH}{invoice['file_name']}", f"{MATCHED_PATH}{invoice['file_name']}")
+        shutil.move(f"{REGISTERS_PATH}{register['file_name']}", f"{MATCHED_PATH}{register['file_name']}")
 
         merged_file = PdfFileMerger()
-        merged_file.append(PdfFileReader(f"{MATCHED_PATH}{os.path.sep}{invoice['file_name']}"))
-        merged_file.append(PdfFileReader(f"{MATCHED_PATH}{os.path.sep}{register['file_name']}"))
-        merged_file.write(f"{MATCHED_PATH}{os.path.sep}MATCHED-{invoice['number']}.pdf")
+        merged_file.append(PdfFileReader(f"{MATCHED_PATH}{invoice['file_name']}"))
+        merged_file.append(PdfFileReader(f"{MATCHED_PATH}{register['file_name']}"))
+        merged_file.write(f"{MATCHED_PATH}MATCHED-{invoice['number']}.pdf")
 
         self.report.append_match(invoice=invoice, register=register)
 
@@ -104,11 +105,11 @@ class MatchingReporting:
         self.wb = None
 
     def send_report(self):
-        self.wb = openpyxl.load_workbook(f'{MATCHED_PATH}{os.path.sep}AutoMatchReport.xlsx')
+        self.wb = openpyxl.load_workbook(f'{MATCHED_PATH}AutoMatchReport.xlsx')
         self.save_matches()
         self.save_variances()
         self.save_multiple_matches()
-        self.wb.save(f'{MATCHED_PATH}{os.path.sep}AutoMatchReport.xlsx')
+        self.wb.save(f'{MATCHED_PATH}AutoMatchReport.xlsx')
         self.wb.close()
 
     def save_matches(self):
@@ -145,12 +146,13 @@ def print_stack():
     filename = exception_traceback.tb_frame.f_code.co_filename
     line_number = exception_traceback.tb_lineno
     exception_message = f'Exception Type: {exception_type} - File Name: {filename} - Line Number: {line_number}'
-    f = open(f'{MATCHED_PATH}{os.path.sep}ErrorLog.txt', "a")
+    f = open(f'{MATCHED_PATH}ErrorLog.txt', "a")
     f.write(exception_message)
     f.close()
 
 
 if __name__ == '__main__':
+
     try:
         Matching().run()
     except Exception as e:
