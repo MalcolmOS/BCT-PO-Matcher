@@ -99,26 +99,16 @@ class MatchingReporting:
 
     def send_report(self):
         self.wb = openpyxl.load_workbook(f'{MATCHED_PATH}AutoMatchReport.xlsx')
-        self.save_matches()
-        self.save_variances()
-        self.save_multiple_matches()
+        self.save(data=self.matches, workbook=self.wb['Matches'])
+        self.save(data=self.variances, workbook=self.wb['Variances'])
+        self.save(data=self.multiple_matches, workbook=self.wb['MultipleMatches'])
         self.wb.save(f'{MATCHED_PATH}AutoMatchReport.xlsx')
         self.wb.close()
 
-    def save_matches(self):
-        self.wb.active = self.wb['Matches']
-        for match in self.matches:
-            self.wb.active.append(match)
-
-    def save_variances(self):
-        self.wb.active = self.wb['Variances']
-        for variance in self.variances:
-            self.wb.active.append(variance)
-
-    def save_multiple_matches(self):
-        self.wb.active = self.wb['MultipleMatches']
-        for match in self.multiple_matches:
-            self.wb.active.append(match)
+    def save(self, data, workbook):
+        self.wb.active = workbook
+        for index in data:
+            self.wb.active.append(index)
 
     def append_match(self, invoice, register):
         print(f"Found match - Invoice: {invoice['file_name']} - RR: {register['file_name']}")
