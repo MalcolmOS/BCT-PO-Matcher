@@ -65,13 +65,7 @@ class Matching:
     @staticmethod
     def only_match_in_list(data, po, amount):
         # Searches the list and ensures only one match
-        count = 0
-        for index in data:
-            if count >= 2:
-                break
-            elif index['po'] == po and index['subtotal'] == amount:
-                count += 1
-        return count < 2
+        return len(list(filter(lambda index: index['po'] == po and index['subtotal'] == amount, data))) < 2
 
     @staticmethod
     def is_match(inv, register):
