@@ -38,8 +38,15 @@ class Matching:
                     self.merge_files(invoice=invoice, register=rr)
                 else:
                     self.report.append_multi_match(invoice=invoice)
-                self.invoices.remove(invoice)
-                self.registers.remove(rr)
+                # removes the match from the list because we don't need to check for it again
+                self.remove_match_from_list(invoice=invoice, rr=rr)
+
+    def remove_match_from_list(self, invoice, rr):
+        try:
+            self.invoices.remove(invoice)
+            self.registers.remove(rr)
+        except ValueError:
+            pass
 
     def search_registers_for_variance(self, invoice):
         for rr in self.registers:
